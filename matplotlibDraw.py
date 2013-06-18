@@ -42,6 +42,9 @@ class report():
         self.creatReport()
     
     def getFatherPath(self,c_path):
+        '''
+        @return: the father directory of thr input path
+        '''
         b=c_path.split('\\')
         f_path=''
         for i in range(0,len(b)-1):
@@ -62,14 +65,36 @@ class report():
         return x,y
     
     def averageCalculator(self,a_list):
+        '''
+        @return: the average of a list
+        '''
         t=0
         for i in a_list:
             t+=int(i)
-        a=t/len(a_list)
-        b="%.2f" %a
-        return b
+        if len(a_list)!=0:
+            a=t/len(a_list)
+            return "%.2f" %a
+        else:
+            return 0
+
+    def noneZeroAverageCalculator(self,a_list):
+        '''
+        @return: the average of a list without zero
+        '''
+        b=[]
+        for i in a_list:
+            if i !=0:
+                b.append(int(i))
+        if len(b)!=0:
+            a=sum(b)/len(b)
+            return "%.2f" %a
+        else:
+            return 0
 
     def getMessageList(self):
+        '''
+        set the list of the queue
+        '''
         line_no=0
         try:
             with open(self.file,encoding=sys.getfilesystemencoding())as a_file:
@@ -140,17 +165,27 @@ class report():
         pl.ylabel('Number')
         if self.config['ReportMode']=='D':
             x21,y21=self.setPoint(self.difference_Dequeued)
-            average_Dequeued= self.averageCalculator(y21)
+            if self.config['IsCalZero']=='Z':
+                average_Dequeued= self.averageCalculator(y21)
+            else:
+                average_Dequeued=self.noneZeroAverageCalculator(y21)
             self.draw_one_plot(x21, y21,'r','$Dequeued Difference-AVG:'+str(average_Dequeued)+'$')
         elif self.config['ReportMode']=='E':
             x22,y22=self.setPoint(self.difference_Enqueued)
-            average_Enqueued=self.averageCalculator(y22)
+            if self.config['IsCalZero']=='Z':
+                average_Enqueued=self.averageCalculator(y22)
+            else:
+                average_Enqueued=self.noneZeroAverageCalculator(y22)
             self.draw_one_plot(x22, y22,'black','$Enqueued Difference-AVG:'+str(average_Enqueued)+'$')
         else:
             x21,y21=self.setPoint(self.difference_Dequeued)
             x22,y22=self.setPoint(self.difference_Enqueued)
-            average_Enqueued=self.averageCalculator(y22)
-            average_Dequeued=self.averageCalculator(y21)
+            if self.config['IsCalZero']=='Z':
+                average_Enqueued=self.averageCalculator(y22)
+                average_Dequeued= self.averageCalculator(y21)
+            else:
+                average_Dequeued=self.noneZeroAverageCalculator(y21)
+                average_Enqueued=self.noneZeroAverageCalculator(y22)
             self.draw_two_plot(x21, y21,'r','$Dequeued Difference-AVG:'+str(average_Dequeued)+'$',
                        x22,y22,'black','$Enqueued Difference-AVG:'+str(average_Enqueued)+'$')
     
@@ -165,5 +200,4 @@ class report():
         pl.show()
     
 if __name__ == '__main__':  
-#    main()
     report()

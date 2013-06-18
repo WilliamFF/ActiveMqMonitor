@@ -16,19 +16,22 @@ class report():
     draw report for activemq
     '''
     def __init__(self):
-        configFile=self.getFatherPath(os.getcwd())+'config.txt'
-        if os.path.exists(configFile)!=1:
-            print('[WARN]Can not find the config file: '+configFile)
+        configFile=os.getcwd()+'\config.txt'
+        if os.path.exists(configFile):
+            self.configFile=configFile
+        elif os.path.exists(configFile):
+            self.cconfigFile=self.getFatherPath(os.getcwd())+'config.txt'
+        else:
+            print('[ERROR 2] No such file or directory:',configFile)
             return
         readFile = ReadFile()
-        readFile.setFileName(configFile)
+        readFile.setFileName(self.configFile)
         self.config=dict(readFile.ReadTxtBySpl())
         self.file=self.config['MonitorFileName']
         if os.path.exists(self.file)!=1:
-            print('[WARN]Can not find the monitor file: '+self.file)
+            print('[ERROR 2] No such file or directory:',self.file)
             return
         
-        self.time=self.config['IntervalTime']
         self.fontSize=10
         
         self.Content_MessagesDequeued=[]
@@ -77,7 +80,7 @@ class report():
         else:
             return 0
 
-    def noneZeroAverageCalculator(self,a_list):
+    def noZeroAverageCalculator(self,a_list):
         '''
         @return: the average of a list without zero
         '''
@@ -141,6 +144,7 @@ class report():
         p1_legend.get_frame().set_alpha(0.3)
             
     def creatReport(self):
+        self.time=self.config['IntervalTime']
         pl.figure(1)
         ax1 = pl.subplot(311)
         ax2 = pl.subplot(312)
@@ -168,14 +172,14 @@ class report():
             if self.config['IsCalZero']=='Z':
                 average_Dequeued= self.averageCalculator(y21)
             else:
-                average_Dequeued=self.noneZeroAverageCalculator(y21)
+                average_Dequeued=self.noZeroAverageCalculator(y21)
             self.draw_one_plot(x21, y21,'r','$Dequeued Difference-AVG:'+str(average_Dequeued)+'$')
         elif self.config['ReportMode']=='E':
             x22,y22=self.setPoint(self.difference_Enqueued)
             if self.config['IsCalZero']=='Z':
                 average_Enqueued=self.averageCalculator(y22)
             else:
-                average_Enqueued=self.noneZeroAverageCalculator(y22)
+                average_Enqueued=self.noZeroAverageCalculator(y22)
             self.draw_one_plot(x22, y22,'black','$Enqueued Difference-AVG:'+str(average_Enqueued)+'$')
         else:
             x21,y21=self.setPoint(self.difference_Dequeued)
@@ -184,8 +188,8 @@ class report():
                 average_Enqueued=self.averageCalculator(y22)
                 average_Dequeued= self.averageCalculator(y21)
             else:
-                average_Dequeued=self.noneZeroAverageCalculator(y21)
-                average_Enqueued=self.noneZeroAverageCalculator(y22)
+                average_Dequeued=self.noZeroAverageCalculator(y21)
+                average_Enqueued=self.noZeroAverageCalculator(y22)
             self.draw_two_plot(x21, y21,'r','$Dequeued Difference-AVG:'+str(average_Dequeued)+'$',
                        x22,y22,'black','$Enqueued Difference-AVG:'+str(average_Enqueued)+'$')
     

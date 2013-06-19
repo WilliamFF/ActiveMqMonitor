@@ -19,11 +19,13 @@ class report():
         configFile=os.getcwd()+'\config.txt'
         if os.path.exists(configFile):
             self.configFile=configFile
-        elif os.path.exists(configFile):
-            self.cconfigFile=self.getFatherPath(os.getcwd())+'config.txt'
         else:
-            print('[ERROR 2] No such file or directory:',configFile)
-            return
+            configFile=self.getFatherPath(os.getcwd())+'config.txt'
+            if os.path.exists(configFile):
+                self.configFile=configFile
+            else:
+                print('[ERROR 2] No such file or directory:',configFile)
+                return
         readFile = ReadFile()
         readFile.setFileName(self.configFile)
         self.config=dict(readFile.ReadTxtBySpl())

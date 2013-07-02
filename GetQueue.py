@@ -1,5 +1,6 @@
 #-*-coding:utf-8-*-
 import re
+import urllib
 from urllib.request import urlopen  
 '''
 @author: ljchu
@@ -8,12 +9,14 @@ from urllib.request import urlopen
 class GetQueue:
     '''
     @return: list of queue message.
-    @param ActiveMqUrl:
-    @param QueueName:
+    @param ActiveMqUrl:the URI of the ActiveMq
+    @param QueueName:the name of the queue
     '''
     def __init__(self):
         self.url=''
         self.QueueName=''
+        self.pageDoc=''
+        self.timeout=0
     
     def SetActiveMqUrl(self,ActiveMqUrl):
         self.url=ActiveMqUrl
@@ -23,21 +26,31 @@ class GetQueue:
     
     def ParserWebHtml(self):
         try:
-            pageDoc = urlopen(self.url).read().decode("utf-8")
+            pageDoc = urlopen(self.url,timeout=self.timeout).read().decode("utf-8")
         except Exception as e:
             print(e)
-            print('[ERROR]:Can not get the web page:'+self.url)
-            return
+            str_e=str(e)
+            if str_e.find('timed') != -1:
+                return 1
+            else:
+                return 2
         else:
-            self.pageDoc = pageDoc
+            self.pageDoc=pageDoc
         
     def GetQueueMessageList(self):
-        self.ParserWebHtml()
+        a=self.ParserWebHtml()
+        if a==1:
+            self.QueueMessageList=[]
+            return
+        elif a == 2:
+            self.QueueMessageList=None
+            return
         str=self.QueueName+'</a></td>'
         #get the start position of the queue message
         StartPos=self.pageDoc.find(str)
         if StartPos<0:
             print('[WARN]:Can not find the Queue:'+self.QueueName)
+            self.QueueMessageList=None
             return
         #set the end position
         EndPos=StartPos+100

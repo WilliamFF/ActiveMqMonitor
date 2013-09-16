@@ -8,9 +8,7 @@ ActiveMqMonitor是一款免费开源的测试工具类软件，由ljchu主导，
 
 当前版本build1.02，build notes如下：
 
-
-
-支持Apache ActiveMq5.7+版本的监控
-支持图表生成
-使用Python3.2运行环境
-支持windows、linux
+1.支持Apache ActiveMq5.7+版本的监控
+2.支持图表生成
+3.使用Python3.2运行环境
+4.支持windows、linux

@@ -22,17 +22,14 @@ class ReadFile:
         try:
             with open(self.filename,encoding=sys.getfilesystemencoding())as a_file:
                 for a_line in a_file:
-#                    print(a_line)
                     if len(a_line) >1 and a_line.find('#') ==-1: 
                         line_no +=1
                         a_Content = a_line.rstrip().split(self.spl)
                         Content.append(a_Content)
                     else:
                         line_no +=1
-            #print(Content)
             return(Content)
         except Exception as e:
-            #print('Can not read the file: ',e)
             print(e)
             return False
     

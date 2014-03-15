@@ -4,7 +4,7 @@ ActiveMqMonitor
 Monitor the ActiveMq and generate charts.
 
 ===============
-ActiveMqMonitor是一款免费开源的测试工具类软件，开发语言Python（3.2），主要用来监控Apache ActiveMq，并绘制监控结果生成图表。
+ActiveMqMonitor由Python（3.2）开发，主要用来监控Apache ActiveMq，并绘制监控结果生成图表。
 
 当前版本build1.02，build notes如下：
 
